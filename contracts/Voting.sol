@@ -4,6 +4,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Token.sol";
 
+/**
+ * @title A voting contract for DAO governance
+ * @author Vishnu C
+ * @notice A simple voting implementation for DAO governance where uers have to stake tokens to vote
+ */
 contract Voting is Ownable {
     Token token;
     bool proposalLock = true;
@@ -60,14 +65,14 @@ contract Voting is Ownable {
     /**
      * @dev Function for admin to lock invitation for proposals
      */
-     function lockProposal() onlyOwner {
+     function lockProposal() public onlyOwner {
          proposalLock = true;
      }
 
     /**
      * @dev Function for admin to unlock invitation for proposals
      */
-     function unlockProposal() onlyOwner {
+     function unlockProposal() public onlyOwner {
          proposalLock = false;
      }
 
@@ -75,8 +80,8 @@ contract Voting is Ownable {
      * @dev Function for users to propose an idea
      * @param _proposalName Proposal that is being proposed
      */
-     function proposeIdea(string _proposalName) {
-         uint256 memory votingPow = votingPower(msg.sender);
+     function proposeIdea(bytes32 _proposalName) public {
+         uint256 votingPow = votingPower(msg.sender);
          require(votingPow > 0, "You don't have enough voting power to propose an idea");
          proposals.push(Proposal({
                 name: _proposalName,
@@ -87,6 +92,7 @@ contract Voting is Ownable {
     /**
      * @dev Internal function to calculate voting power of an address
      * @param _addr Address for whom voting power needs to be calculated
+     * @return Voting power in integer format
      */
      function votingPower(address _addr) view internal returns(uint256) {
          if(block.timestamp - voters[_addr].depositTime < 30 days || voters[_addr].amount == 0) {
@@ -103,14 +109,14 @@ contract Voting is Ownable {
     /**
      * @dev Function for owner to unlock voting so that voting can start
      */
-     function unlockVoting() onlyOwner {
+     function unlockVoting() public onlyOwner {
          votingLock = true;
      }
 
     /**
      * @dev Function for owner to lock voting so that voting can stop
     */
-     function lockVoting() onlyOwner {
+     function lockVoting() public onlyOwner {
          votingLock = false;
      }
 
@@ -120,7 +126,7 @@ contract Voting is Ownable {
      */
      function vote(uint256 _proposalIndex) external {
          require(voters[msg.sender].voted == false, "You already voted");
-         uint256 memory votingPow = votingPower(msg.sender);
+         uint256 votingPow = votingPower(msg.sender);
          require(votingPow > 0, "You don't have the voting power to vote");
          voters[msg.sender].voted = true;
          voters[msg.sender].vote = _proposalIndex;
@@ -129,12 +135,13 @@ contract Voting is Ownable {
 
     /**
      * @dev Function for Owner to find the winning proposal
+     * @return Name of the winning proposal
      */
      function findWinningProposal() public view onlyOwner returns(bytes32) {
         uint256 winningVoteCount = 0;
-        uint256 memory winningProposal;
+        uint256 winningProposal;
         for (uint256 i = 0; i < proposals.length; i++) {
-            if (proposals[p].voteCount > winningVoteCount) {
+            if (proposals[i].voteCount > winningVoteCount) {
                 winningVoteCount = proposals[i].voteCount;
                 winningProposal = i;
             }
