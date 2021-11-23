@@ -36,3 +36,34 @@
     transform: rotate(360deg);
   }
 }
+
+.button {
+  background-color: #008cba;
+  border: 1px solid #008cba;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  width: 20%;
+}
+
+.button:hover {
+  background-color: white; /* Green */
+  color: black;
+  cursor: pointer;
+}
+
+input[type='text'] {
+  width: 20%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+p {
+  color: green;
+  font-size: 20px;
+}
