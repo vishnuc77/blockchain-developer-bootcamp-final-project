@@ -16,6 +16,8 @@ contract Voting is Ownable {
 
     event StakeEvent(address, uint256);
     event UnstakeEvent(address, uint256);
+    event ProposeIdeaEvent(address, bytes32);
+    event VoteEvent(address, uint256);
 
     struct Voter {
         uint256 amount;
@@ -54,10 +56,10 @@ contract Voting is Ownable {
 
     /**
      * @dev Function for users to unstake tokens
-     * @param _amount Amount to be unstaked
      */
-    function unstake(uint256 _amount) public {
-        voters[msg.sender].amount -= _amount;
+    function unstake() public {
+        uint256 _amount = voters[msg.sender].amount;
+        voters[msg.sender].amount = 0;
         token.transfer(msg.sender, _amount);
         emit UnstakeEvent(msg.sender, _amount);
     }
@@ -81,12 +83,14 @@ contract Voting is Ownable {
      * @param _proposalName Proposal that is being proposed
      */
      function proposeIdea(bytes32 _proposalName) public {
+         require(!proposalLock, "Cannot propose now since proposalLock is true");
          uint256 votingPow = votingPower(msg.sender);
          require(votingPow > 0, "You don't have enough voting power to propose an idea");
          proposals.push(Proposal({
                 name: _proposalName,
                 voteCount: 0
             }));
+         emit ProposeIdeaEvent(msg.sender, _proposalName);
      }
 
     /**
@@ -110,14 +114,14 @@ contract Voting is Ownable {
      * @dev Function for owner to unlock voting so that voting can start
      */
      function unlockVoting() public onlyOwner {
-         votingLock = true;
+         votingLock = false;
      }
 
     /**
      * @dev Function for owner to lock voting so that voting can stop
     */
      function lockVoting() public onlyOwner {
-         votingLock = false;
+         votingLock = true;
      }
 
     /**
@@ -125,12 +129,15 @@ contract Voting is Ownable {
      * @param _proposalIndex Index of the proposal for which the user wants to vote
      */
      function vote(uint256 _proposalIndex) external {
+         require(!votingLock, "Cannot vote now since votingLock is true");
          require(voters[msg.sender].voted == false, "You already voted");
          uint256 votingPow = votingPower(msg.sender);
          require(votingPow > 0, "You don't have the voting power to vote");
          voters[msg.sender].voted = true;
          voters[msg.sender].vote = _proposalIndex;
          proposals[_proposalIndex].voteCount += votingPow;
+         emit VoteEvent(msg.sender, _proposalIndex);
+
      }
 
     /**
