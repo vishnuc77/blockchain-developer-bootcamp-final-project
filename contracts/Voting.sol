@@ -11,8 +11,8 @@ import "./Token.sol";
  */
 contract Voting is Ownable {
     Token token;
-    bool proposalLock = true;
-    bool votingLock = true;
+    bool public proposalLock = true;
+    bool public votingLock = true;
 
     event StakeEvent(address, uint256);
     event UnstakeEvent(address, uint256);
@@ -79,6 +79,19 @@ contract Voting is Ownable {
      }
 
     /**
+     * @dev Function to list all proposals
+     */
+     function listProposals() public view returns (Proposal[] memory) {
+        Proposal[] memory proposalsArray = new Proposal[](
+            proposals.length
+        );
+        for (uint256 i = 0; i < proposals.length; i++) {
+            proposalsArray[i] = proposals[i];
+        }
+        return proposalsArray;
+    }
+
+    /**
      * @dev Function for users to propose an idea
      * @param _proposalName Proposal that is being proposed
      */
@@ -99,10 +112,10 @@ contract Voting is Ownable {
      * @return Voting power in integer format
      */
      function votingPower(address _addr) view internal returns(uint256) {
-         if(block.timestamp - voters[_addr].depositTime < 30 days || voters[_addr].amount == 0) {
+         if(block.timestamp - voters[_addr].depositTime < 5 seconds || voters[_addr].amount == 0) {
              return 0;
          } else {
-             if(block.timestamp - voters[_addr].depositTime >= 90 days) {
+             if(block.timestamp - voters[_addr].depositTime >= 30 seconds) {
                  return  (2*voters[_addr].amount);
              } else {
                  return voters[_addr].amount;
