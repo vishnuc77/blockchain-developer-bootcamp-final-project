@@ -14,6 +14,7 @@ function App() {
   const [ votingLock, setVotingLock ] = useState(true);
   const [proposals, setProposals ] = useState([]);
   const [ voteValue, setVoteValue ] = useState(0);
+  const [ show, setShow ] = useState(false);
   const [ idea, setIdea ] = useState(ethers.utils.formatBytes32String(""));
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -185,6 +186,12 @@ function App() {
     }
   }
 
+  function listProposalElements() {
+    //window.alert(ethers.utils.parseBytes32String(proposals[0].name));
+    setShow(true);
+
+  }
+
   async function unlockVotingProcess() {
     if(typeof window.ethereum !== 'undefined') {
       await requestAccount();
@@ -247,33 +254,49 @@ function App() {
   
   return (
     <div className="App">
+      <div className="topnav">
+        <a>Balance: {balance}</a>
+        <a>Allowance: {allowance}</a>
+        <a>Proposal lock: {proposalLock ? "Yes" : "No"}</a>
+        <a>Voting lock: {votingLock ? "Yes" : "No"}</a>
+      </div>
       <header className="App-header"><br />
       <button className="button" onClick={requestAccount}>Connect</button><br />
         {/* <button className="button" onClick={fetchBalance}>Get Balance</button><br /><br /> */}
-        <p>Balance: {balance} &nbsp; &nbsp; Allowance: {allowance}</p>
+        {/* <p>Balance: {balance} &nbsp; &nbsp; Allowance: {allowance}</p>
         <p>Proposal lock: {proposalLock ? "Yes" : "No"}</p>
-        <p>Voting lock: {votingLock ? "Yes" : "No"}</p>
+        <p>Voting lock: {votingLock ? "Yes" : "No"}</p> */}
         <input type="text" onChange={e => setApproveValue(e.target.value)} placeholder="Set approve value" />
-        <button className="button" onClick={approve}>Approve</button><br /><br />
+        <button className="button" onClick={approve}>Approve</button><br />
         {/* <button className="button" onClick={getAllowance}>Get Allowance</button><br /><br /> */}
         <input type="text" onChange={e => setStakeValue(e.target.value)} placeholder="Set stake value" />
         <button className="button" onClick={stake}>Stake</button><br />
         <button className="button" onClick={unstake}>Unstake</button><br />
         { isadmin
           ? <div>
-              <button onClick={isProposalLocked}>Proposal locked?</button><br />
-              <button onClick={unlockProposalInvitation}>Unlock Proposal</button><br />
-              <button onClick={lockProposalInvitation}>Lock Proposal</button><br />
-              <button onClick={listAllProposals}>List proposals</button><br />
-              <button onClick={unlockVotingProcess}>Unlock Voting</button><br />
-              <button onClick={lockVotingProcess}>Lock Voting</button><br />
-              <button onClick={findWinningProposal}>Winning proposal</button><br />
+              <button className="button1" onClick={isProposalLocked}>Proposal locked?</button>&nbsp;
+              <button className="button1" onClick={unlockProposalInvitation}>Unlock Proposal</button>&nbsp;
+              <button className="button1" onClick={lockProposalInvitation}>Lock Proposal</button><br /><br />
+              <button className="button1" onClick={listAllProposals}>List proposals</button><br /><br />
+              <button className="button1" onClick={unlockVotingProcess}>Unlock Voting</button>&nbsp;
+              <button className="button1" onClick={lockVotingProcess}>Lock Voting</button><br /><br />
+              <button className="button1" onClick={findWinningProposal}>Winning proposal</button><br />
             </div>
           : <div>
-              <input onChange={e => setIdea(ethers.utils.formatBytes32String(e.target.value))} placeholder="Proposal" />&nbsp;
-              <button onClick={inviteIdea}>Propose Idea</button><br />
-              <input onChange={e => setVoteValue(e.target.value)} placeholder="Proposal index" />&nbsp;
-              <button onClick={vote}>Vote</button><br /><br />
+              <input type="text1" onChange={e => setIdea(ethers.utils.formatBytes32String(e.target.value))} placeholder="Proposal" />&nbsp;
+              <button className="button1" onClick={inviteIdea}>Propose Idea</button><br />
+              <input type="text1" onChange={e => setVoteValue(e.target.value)} placeholder="Proposal index" />&nbsp;
+              <button className="button1" onClick={vote}>Vote</button><br /><br />
+              <button className="button1" onClick={listProposalElements}>Show</button><br /><br />
+              { show && 
+                <ol>
+                  {proposals.map(name1 => (  
+                    <li>  
+                      {ethers.utils.parseBytes32String(name1.name)}  
+                    </li>  
+                  ))} 
+                </ol> 
+              }
             </div>
         }
       </header>

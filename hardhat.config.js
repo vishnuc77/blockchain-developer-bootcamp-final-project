@@ -7,7 +7,7 @@ const alchemy_url = "https://eth-rinkeby.alchemyapi.io/v2/0jugd-ZpQo2ChtRw0KEh3Q
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.4",
+  solidity: "0.8.0",
   networks: {
     rinkeby: {
       url: alchemy_url,
