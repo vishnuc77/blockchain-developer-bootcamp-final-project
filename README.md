@@ -1,15 +1,32 @@
-# Basic Sample Hardhat Project
+# DAO Governance
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+# Deployed application URL:
 
-Try running some of the following tasks:
+https://voting3.vercel.app/
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+## Running the project locally:
+
+### Prerequisites
+
+- Node.js >= 14
+- Hardhat
+- `git checkout main`
+
+### Smart contracts
+
+- Run `npm install` in project root
+- Create .env file in project root with the following content:
+    PRIVATE_KEY=<provide-account-private-key-here>
+- Run `npx hardhat test` to run tests
+- Run `npx hardhat run --network rinkeby scripts/deploy.js` to deploy the contracts in rinkeby
+
+### Front-end
+
+- Run `cd frontend` in project root
+- `npm install`
+- `npm start`
+- Open `http://localhost:3000`
+  
+## Screencast link
+  
+## Project description
