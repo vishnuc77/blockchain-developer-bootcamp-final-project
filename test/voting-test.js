@@ -236,7 +236,8 @@ describe("Voting contract", function () {
             await voting.connect(bob).vote(1);
             await voting.connect(carol).vote(0);
 
-            let vote_true = await voting.votersList(0);
+            let addr_bob = await voting.votersList(0);
+            let vote_true = await voting.voters(addr_bob);
             expect(vote_true.voted).to.equal(true);
 
             await voting.findWinningProposal();
@@ -244,7 +245,7 @@ describe("Voting contract", function () {
             let proposals = await voting.listProposals();
             expect(proposals.length).to.equal(0);
 
-            let vote_false = await voting.votersList(0);
+            let vote_false = await voting.voters(addr_bob);
             expect(vote_false.voted).to.equal(false);
         });
     })
