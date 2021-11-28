@@ -27,6 +27,7 @@ contract Voting is Ownable {
     }
 
     mapping(address => Voter) public voters;
+    Voter[] public votersList;
 
     struct Proposal {
         bytes32 name;
@@ -148,6 +149,7 @@ contract Voting is Ownable {
          require(votingPow > 0, "You don't have the voting power to vote");
          voters[msg.sender].voted = true;
          voters[msg.sender].vote = _proposalIndex;
+         votersList.push(voters[msg.sender]);
          proposals[_proposalIndex].voteCount += votingPow;
          emit VoteEvent(msg.sender, _proposalIndex);
 
@@ -169,10 +171,17 @@ contract Voting is Ownable {
         return proposals[winningProposal].name;
      }
 
+    /**
+     * @dev Function to delete all proposals at the end of voting
+     */
      function deleteProposals() public onlyOwner {
          uint256 len = proposals.length;
          for (uint256 i = 0; i < len; i++) {
              proposals.pop();
+         }
+         uint256 votersLen = votersList.length;
+         for (uint256 i = 0; i < votersLen; i++) {
+             votersList[i].voted = false;
          }
      }
 }

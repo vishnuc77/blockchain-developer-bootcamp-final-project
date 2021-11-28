@@ -233,14 +233,19 @@ describe("Voting contract", function () {
 
             await voting.unlockVoting();
 
-            await expect(voting.connect(bob).vote(1));
-            await expect(voting.connect(carol).vote(0));
+            await voting.connect(bob).vote(1);
+            await voting.connect(carol).vote(0);
+
+            let vote_true = await voting.votersList(0);
+            expect(vote_true.voted).to.equal(true);
 
             await voting.findWinningProposal();
             await voting.deleteProposals();
             let proposals = await voting.listProposals();
-            console.log(proposals);
             expect(proposals.length).to.equal(0);
+
+            let vote_false = await voting.votersList(0);
+            expect(vote_false.voted).to.equal(false);
         });
     })
 });

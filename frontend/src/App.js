@@ -270,6 +270,7 @@ function App() {
   return (
     <div className="App">
       <div className="topnav">
+        <a><strong>VOTING</strong></a>
         <a>Balance: {balance}</a>
         <a>Allowance: {allowance}</a>
         <a>Proposal lock: {proposalLock ? "Yes" : "No"}</a>
