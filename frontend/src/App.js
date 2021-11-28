@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import Voting from './Voting.json';
 import Token from './Token.json';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import './App.css';
 
 function App() {
@@ -14,7 +14,9 @@ function App() {
   const [ votingLock, setVotingLock ] = useState(true);
   const [proposals, setProposals ] = useState([]);
   const [ voteValue, setVoteValue ] = useState(0);
+  const [ winner, setWinner ] = useState("");
   const [ show, setShow ] = useState(false);
+  const [ visibilityWinner, setVisibilityWinner ] = useState(false);
   const [ idea, setIdea ] = useState(ethers.utils.formatBytes32String(""));
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -179,17 +181,12 @@ function App() {
       try {
         const proposalList = await contract.listProposals();
         setProposals(proposalList);
+        setShow(true);
         console.log(ethers.utils.parseBytes32String(proposalList[0].name));
       } catch (err) {
         console.log('Error: ', err);
       }
     }
-  }
-
-  function listProposalElements() {
-    //window.alert(ethers.utils.parseBytes32String(proposals[0].name));
-    setShow(true);
-
   }
 
   async function unlockVotingProcess() {
@@ -245,7 +242,25 @@ function App() {
       const contract = new ethers.Contract(Voting.address, Voting.abi, signer);
       try {
         const name = await contract.findWinningProposal();
+        setWinner(name);
+        setVisibilityWinner(true);
         console.log(ethers.utils.parseBytes32String(name));
+      } catch (err) {
+        console.log('Error: ', err);
+      }
+    }
+  }
+
+  async function deleteProposals() {
+    if(typeof window.ethereum !== 'undefined') {
+      await requestAccount();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(Voting.address, Voting.abi, signer);
+      try {
+        await contract.deleteProposals();
+        setVisibilityWinner(false);
+        setShow(false);
       } catch (err) {
         console.log('Error: ', err);
       }
@@ -262,42 +277,59 @@ function App() {
       </div>
       <header className="App-header"><br />
       <button className="button" onClick={requestAccount}>Connect</button><br />
-        {/* <button className="button" onClick={fetchBalance}>Get Balance</button><br /><br /> */}
-        {/* <p>Balance: {balance} &nbsp; &nbsp; Allowance: {allowance}</p>
-        <p>Proposal lock: {proposalLock ? "Yes" : "No"}</p>
-        <p>Voting lock: {votingLock ? "Yes" : "No"}</p> */}
-        <input type="text" onChange={e => setApproveValue(e.target.value)} placeholder="Set approve value" />
-        <button className="button" onClick={approve}>Approve</button><br />
-        {/* <button className="button" onClick={getAllowance}>Get Allowance</button><br /><br /> */}
-        <input type="text" onChange={e => setStakeValue(e.target.value)} placeholder="Set stake value" />
-        <button className="button" onClick={stake}>Stake</button><br />
-        <button className="button" onClick={unstake}>Unstake</button><br />
-        { isadmin
-          ? <div>
-              <button className="button1" onClick={isProposalLocked}>Proposal locked?</button>&nbsp;
-              <button className="button1" onClick={unlockProposalInvitation}>Unlock Proposal</button>&nbsp;
-              <button className="button1" onClick={lockProposalInvitation}>Lock Proposal</button><br /><br />
-              <button className="button1" onClick={listAllProposals}>List proposals</button><br /><br />
-              <button className="button1" onClick={unlockVotingProcess}>Unlock Voting</button>&nbsp;
-              <button className="button1" onClick={lockVotingProcess}>Lock Voting</button><br /><br />
-              <button className="button1" onClick={findWinningProposal}>Winning proposal</button><br />
-            </div>
-          : <div>
-              <input type="text1" onChange={e => setIdea(ethers.utils.formatBytes32String(e.target.value))} placeholder="Proposal" />&nbsp;
-              <button className="button1" onClick={inviteIdea}>Propose Idea</button><br />
-              <input type="text1" onChange={e => setVoteValue(e.target.value)} placeholder="Proposal index" />&nbsp;
-              <button className="button1" onClick={vote}>Vote</button><br /><br />
-              <button className="button1" onClick={listProposalElements}>Show</button><br /><br />
-              { show && 
-                <ol>
+      {/* <button className="button" onClick={fetchBalance}>Get Balance</button><br /><br /> */}
+      {/* <p>Balance: {balance} &nbsp; &nbsp; Allowance: {allowance}</p>
+      <p>Proposal lock: {proposalLock ? "Yes" : "No"}</p>
+      <p>Voting lock: {votingLock ? "Yes" : "No"}</p> */}
+      <input type="text" onChange={e => setApproveValue(e.target.value)} placeholder="Set approve value" />
+      <button className="button" onClick={approve}>Approve</button><br />
+      {/* <button className="button" onClick={getAllowance}>Get Allowance</button><br /><br /> */}
+      <input type="text" onChange={e => setStakeValue(e.target.value)} placeholder="Set stake value" />
+      <button className="button" onClick={stake}>Stake</button><br />
+      <button className="button" onClick={unstake}>Unstake</button><br />
+      { isadmin
+        ? <div>
+            <button className="button1" onClick={isProposalLocked}>Proposal locked?</button>&nbsp;
+            <button className="button1" onClick={unlockProposalInvitation}>Unlock Proposal</button>&nbsp;
+            <button className="button1" onClick={lockProposalInvitation}>Lock Proposal</button><br /><br />
+            <button className="button1" onClick={listAllProposals}>List proposals</button><br /><br />
+            { show && 
+              <div className="center">
+                <ol start="0">
+                  {proposals.map(name1 => (  
+                    <li>  
+                      {ethers.utils.parseBytes32String(name1.name)}  
+                    </li>  
+                  ))} 
+                </ol>
+              </div> 
+            }
+            <button className="button1" onClick={unlockVotingProcess}>Unlock Voting</button>&nbsp;
+            <button className="button1" onClick={lockVotingProcess}>Lock Voting</button><br /><br />
+            <button className="button1" onClick={findWinningProposal}>Winning proposal</button><br />
+            { visibilityWinner &&
+              <p>Winning Proposal: {ethers.utils.parseBytes32String(winner)}</p>
+            }
+            <button className="button1" onClick={deleteProposals}>Delete Proposals</button><br />
+          </div>
+        : <div>
+            <input type="text1" onChange={e => setIdea(ethers.utils.formatBytes32String(e.target.value))} placeholder="Proposal" />&nbsp;
+            <button className="button1" onClick={inviteIdea}>Propose Idea</button><br />
+            <input type="text1" onChange={e => setVoteValue(e.target.value)} placeholder="Proposal index" />&nbsp;
+            <button className="button1" onClick={vote}>Vote</button><br /><br />
+            <button className="button1" onClick={listAllProposals}>List proposals</button><br /><br />
+            { show && 
+              <div className="center">
+                <ol start="0">
                   {proposals.map(name1 => (  
                     <li>  
                       {ethers.utils.parseBytes32String(name1.name)}  
                     </li>  
                   ))} 
                 </ol> 
-              }
-            </div>
+              </div>
+            }
+          </div>
         }
       </header>
     </div>

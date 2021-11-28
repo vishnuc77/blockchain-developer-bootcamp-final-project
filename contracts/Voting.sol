@@ -168,4 +168,11 @@ contract Voting is Ownable {
         }
         return proposals[winningProposal].name;
      }
+
+     function deleteProposals() public onlyOwner {
+         uint256 len = proposals.length;
+         for (uint256 i = 0; i < len; i++) {
+             proposals.pop();
+         }
+     }
 }

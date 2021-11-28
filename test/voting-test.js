@@ -197,11 +197,50 @@ describe("Voting contract", function () {
 
             await voting.unlockVoting();
 
-            await expect(voting.connect(bob).vote(1))
-            await expect(voting.connect(carol).vote(0))
+            await expect(voting.connect(bob).vote(1));
+            await expect(voting.connect(carol).vote(0));
 
             let winner = await voting.findWinningProposal();
             expect(winner).to.be.equal(ethers.utils.formatBytes32String("Introduction of ETH asset"));
-        })
+        });
+
+        it("Should be able to delete proposals", async function () {
+            await token.transfer(carol.address, 1000000);
+            await token.connect(carol).approve(voting.address, 1000000);
+            await voting.connect(carol).stake(500000);
+
+            await ethers.provider.send("evm_increaseTime", [100 * 24 * 60 * 60]);
+            await ethers.provider.send("evm_mine", []);
+
+            await token.transfer(alice.address, 1000000);
+            await token.connect(alice).approve(voting.address, 1000000);
+            await voting.connect(alice).stake(500000);
+
+            await token.transfer(bob.address, 1000000);
+            await token.connect(bob).approve(voting.address, 1000000);
+            await voting.connect(bob).stake(500000);
+
+            await ethers.provider.send("evm_increaseTime", [31 * 24 * 60 * 60]);
+            await ethers.provider.send("evm_mine", []);
+
+            await voting.unlockProposal();
+
+            let bytes32_1 = ethers.utils.formatBytes32String("Introduction of ETH asset");
+            await voting.connect(alice).proposeIdea(bytes32_1);
+
+            let bytes32_2 = ethers.utils.formatBytes32String("Introduction of BTC asset");
+            await voting.connect(bob).proposeIdea(bytes32_2);
+
+            await voting.unlockVoting();
+
+            await expect(voting.connect(bob).vote(1));
+            await expect(voting.connect(carol).vote(0));
+
+            await voting.findWinningProposal();
+            await voting.deleteProposals();
+            let proposals = await voting.listProposals();
+            console.log(proposals);
+            expect(proposals.length).to.equal(0);
+        });
     })
 });

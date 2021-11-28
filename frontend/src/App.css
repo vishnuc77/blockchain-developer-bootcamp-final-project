@@ -108,12 +108,19 @@ input[type='text1'] {
   font-size: 17px;
 }
 
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
+ol {
+  background: #282c34;
+  padding: 10px;
+  text-align: center;
 }
 
-.topnav a.active {
-  background-color: #04aa6d;
-  color: white;
+ol li {
+  padding: 5px;
+  text-align: left;
+  margin-left: 20px;
+}
+
+.center {
+  margin: auto;
+  width: 100px;
 }
