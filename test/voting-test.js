@@ -75,12 +75,12 @@ describe("Voting contract", function () {
             await expect(voting.connect(alice).proposeIdea(bytes32)).to.be.revertedWith("You don't have enough voting power to propose an idea");
         });
 
-        it("Should not be able to propose idea when token is not staked for 30 days", async function () {
+        it("Should not be able to propose idea when token is not staked for 2 minutes", async function () {
             await token.transfer(alice.address, 1000000);
             await token.connect(alice).approve(voting.address, 1000000);
             await voting.connect(alice).stake(500000);
 
-            await ethers.provider.send("evm_increaseTime", [29 * 24 * 60 * 60]);
+            await ethers.provider.send("evm_increaseTime", [60]);
             await ethers.provider.send("evm_mine", []);
 
             await voting.unlockProposal();
@@ -142,7 +142,7 @@ describe("Voting contract", function () {
             await expect(voting.connect(bob).vote(0)).to.be.revertedWith("You don't have the voting power to vote");
         });
 
-        it("Should not be able to vote when tokens are staked for less than 30 days", async function () {
+        it("Should not be able to vote when tokens are staked for less than 2 minutes", async function () {
             await token.transfer(alice.address, 1000000);
             await token.connect(alice).approve(voting.address, 1000000);
             await voting.connect(alice).stake(500000);
@@ -155,7 +155,7 @@ describe("Voting contract", function () {
             await token.connect(bob).approve(voting.address, 1000000);
             await voting.connect(bob).stake(500000);
 
-            await ethers.provider.send("evm_increaseTime", [29 * 24 * 60 * 60]);
+            await ethers.provider.send("evm_increaseTime", [60]);
             await ethers.provider.send("evm_mine", []);
 
             await voting.unlockProposal();

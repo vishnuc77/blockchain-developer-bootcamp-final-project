@@ -113,10 +113,10 @@ contract Voting is Ownable {
      * @return Voting power in integer format
      */
      function votingPower(address _addr) view internal returns(uint256) {
-         if(block.timestamp - voters[_addr].depositTime < 5 seconds || voters[_addr].amount == 0) {
+         if(block.timestamp - voters[_addr].depositTime < 2 minutes || voters[_addr].amount == 0) {
              return 0;
          } else {
-             if(block.timestamp - voters[_addr].depositTime >= 30 seconds) {
+             if(block.timestamp - voters[_addr].depositTime >= 10 minutes) {
                  return  (2*voters[_addr].amount);
              } else {
                  return voters[_addr].amount;
