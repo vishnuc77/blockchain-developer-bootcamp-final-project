@@ -16,7 +16,7 @@ https://voting3.vercel.app/
 
 - Run `npm install` in project root
 - Create .env file in project root with the following content:
-    PRIVATE_KEY=<provide-account-private-key-here>
+    `PRIVATE_KEY=<provide-account-private-key-here>`
 - Run `npx hardhat test` to run tests
 - Run `npx hardhat run --network rinkeby scripts/deploy.js` to deploy the contracts in rinkeby
 
@@ -48,6 +48,12 @@ The first stage is when admin unlocks the proposal lock, then any user having vo
 - Admin locks the voting lock
 - Admin finds the winning proposal
 - Admin delete all proposals
+    
+## Environment Variables
+    
+``` 
+PRIVATE_KEY= 
+```
 
 ## Directory structure
 
@@ -62,3 +68,6 @@ The first stage is when admin unlocks the proposal lock, then any user having vo
 - Modify calculation of voting power, so that voting power degrades over time
 - Update the front end so that user gets a notification whenever transaction succeeds and error message when transaction fails
 
+## Public Ethereum wallet for certification:
+
+`0x3Bf95B4945272cd94f795DD18beA45696f359986`
