@@ -12,7 +12,14 @@ https://voting3.vercel.app/
 - Hardhat
 - `git checkout main`
 
-### Smart contracts
+### Smart contract deployment in localhost
+
+- Run `npm install` in project root
+- Run `npx hardhat node` in project root (Account #0 will be the owner, other accounts can be added to metamask to be used as users)
+- Run `npx hardhat test` to run tests
+- Run `npx hardhat run --network localhost scripts/deploy.js` to deploy contracts locally
+
+### Smart contract deployment in rinkeby
 
 - Run `npm install` in project root
 - Create .env file in project root with the following content:
@@ -32,8 +39,8 @@ https://www.loom.com/share/1a1288fcb17a494399180ef4bbb986c7?sharedAppSource=pers
   
 ## Project description
 
-DAO Governance, as the name suggests is a platform which can be used for the governance of DAOs. There are two main functionalities here, suggest a proposal and vote for the proposals. Now coming to how it works. There is a native 'VOTE' ERC-20 token which only the owner of the smart contract gets. Owner can send these tokens to any users. Users who have the VOTE tokens can stake these tokens in the platform to get voting power. Tokens need to be locked in the platform for atleast 30 days to get voting power (since this is difficult to test, for now it is set to 2 mins). Voting power will be equal to the number of the tokens locked in the system, if the user had locked the tokens for less than 90 days and greater than 30 days. If the user has locked the token for more than 90 days, then the voting power will be two times the number of tokens staked.<br /><br />
-The first stage is when admin unlocks the proposal lock, then any user having voting power will be able to suggest proposals. After giving enough time admin will lock the proposal lock and after that users will not be able to suggest new proposals. Once voting time is decided, admin can unlock voting lock, so then any user with voting power can start voting. Once the voting time ends, admin will lock the voting and can find the winning proposal. Winning proposal can be communicated to the community and then admin can delete all the already existing proposals. The same cycle can continue whenever new proposals need to be selected.
+DAO Governance, as the name suggests is a platform which can be used for the governance of DAOs. There are two main functionalities here, suggest proposals and vote for the proposals. Now coming to how it works. There is a native 'VOTE' ERC-20 token which only the owner of the smart contract gets when it is deployed. Owner can send these tokens to any users. Users who have the VOTE tokens can stake these tokens in the platform to get voting power. Tokens need to be locked in the platform for atleast 30 days to get voting power (since this is difficult to test, for now it is set to 2 mins). Voting power will be equal to the number of the tokens locked in the system, if the user has locked the tokens for less than 90 days and greater than 30 days. If the user has locked the token for more than 90 days, then the voting power will be two times the number of tokens staked.<br /><br />
+The first stage is when admin unlocks the proposal lock, then any user having voting power will be able to suggest proposals. After giving enough time, admin will lock the proposal lock and after that users will not be able to suggest new proposals. Once voting time is decided, admin can unlock voting lock, so then any user with voting power will be able to vote. Once the voting time ends, admin will lock the voting and can find the winning proposal. Winning proposal can be communicated to the community and then admin can delete all the existing proposals. The same cycle can continue whenever new proposals need to be selected.
 
 ## A simple workflow
 
