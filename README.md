@@ -2,7 +2,9 @@
 
 ## Deployed application URL:
 
-https://voting3.vercel.app/
+https://voting3.vercel.app/ <br /><br />
+
+(Since this application needs either admin access (who is the owner of the contract) or users with the ERC-20 tokens (which is again a smart contract inside the project), with other accounts, no functionality can be tested. I can send these ERC-20 tokens to test, if needed.)
 
 ## Running the project locally:
 
@@ -61,6 +63,8 @@ The first stage is when admin unlocks the proposal lock, then any user having vo
 ``` 
 PRIVATE_KEY= 
 ```
+<br />
+(Alchemy URL used in this project is from an account which is used only for testing purposes, so have included in the config file itself, no need to provide.)
 
 ## Directory structure
 
