@@ -81,4 +81,4 @@ PRIVATE_KEY=
 
 ## Public Ethereum wallet for certification:
 
-`0x3Bf95B4945272cd94f795DD18beA45696f359986`
+`0x1C06D49689bda7E5EE00412cBeab926ab68B9d28`
